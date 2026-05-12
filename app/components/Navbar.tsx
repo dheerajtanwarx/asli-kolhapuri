@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import CartDrawer from "./CartDrawer";
+import { useStore } from "../lib/store";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -16,7 +18,11 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
+  const { cart, cartOpen, setCartOpen } = useStore();
+  const pathname = usePathname();
+  
+  const isHome = pathname === "/";
+  const showSolidNav = !isHome || scrolled;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,9 +62,9 @@ export default function Navbar() {
           alignItems: "center",
           justifyContent: "center",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-          backgroundColor: scrolled ? "rgba(250, 247, 242, 0.97)" : "transparent",
-          backdropFilter: scrolled ? "blur(20px)" : "none",
-          borderBottom: scrolled ? "1px solid #D4B896" : "1px solid transparent",
+          backgroundColor: showSolidNav ? "rgba(250, 247, 242, 0.97)" : "transparent",
+          backdropFilter: showSolidNav ? "blur(20px)" : "none",
+          borderBottom: showSolidNav ? "1px solid #D4B896" : "1px solid transparent",
         }}
       >
         <div
@@ -79,8 +85,9 @@ export default function Navbar() {
                   fontWeight: 700,
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  color: scrolled ? "var(--matte-black)" : "#fff",
-                  transition: "color 0.4s ease",
+                  color: showSolidNav ? "var(--matte-black)" : "#fff",
+                  transition: "color 0.3s ease",
+                  lineHeight: 1.1,
                 }}
               >
                 Kolhapuri Wala
@@ -90,7 +97,7 @@ export default function Navbar() {
                 style={{
                   fontSize: "0.65rem",
                   letterSpacing: "0.2em",
-                  color: scrolled ? "var(--warm-grey)" : "rgba(255,255,255,0.7)",
+                  color: showSolidNav ? "var(--warm-grey)" : "rgba(255,255,255,0.7)",
                   transition: "color 0.4s ease",
                   marginTop: "-2px",
                 }}
@@ -116,10 +123,11 @@ export default function Navbar() {
                 style={{
                   textDecoration: "none",
                   fontSize: "0.85rem",
-                  fontWeight: 500,
-                  letterSpacing: "0.05em",
-                  color: scrolled ? "var(--matte-black)" : "#fff",
-                  transition: "all 0.3s ease",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  color: showSolidNav ? "var(--matte-black)" : "#fff",
+                  transition: "color 0.3s ease",
                   position: "relative",
                   fontFamily: "var(--font-body)",
                 }}
@@ -140,7 +148,7 @@ export default function Navbar() {
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                color: scrolled ? "var(--matte-black)" : "#fff",
+                color: showSolidNav ? "var(--matte-black)" : "#fff",
                 transition: "color 0.3s ease",
                 fontSize: "1.2rem",
                 padding: "4px",
@@ -162,7 +170,7 @@ export default function Navbar() {
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                color: scrolled ? "var(--matte-black)" : "#fff",
+                color: showSolidNav ? "var(--matte-black)" : "#fff",
                 transition: "color 0.3s ease",
                 fontSize: "1.2rem",
                 padding: "4px",
@@ -185,7 +193,7 @@ export default function Navbar() {
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                color: scrolled ? "var(--matte-black)" : "#fff",
+                color: showSolidNav ? "var(--matte-black)" : "#fff",
                 transition: "color 0.3s ease",
                 fontSize: "1.2rem",
                 padding: "4px",
@@ -206,7 +214,7 @@ export default function Navbar() {
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                color: scrolled ? "var(--matte-black)" : "#fff",
+                color: showSolidNav ? "var(--matte-black)" : "#fff",
                 transition: "color 0.3s ease",
                 fontSize: "1.2rem",
                 padding: "4px",
@@ -218,25 +226,27 @@ export default function Navbar() {
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
-              <span
-                style={{
-                  position: "absolute",
-                  top: "-2px",
-                  right: "-6px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--terracotta)",
-                  color: "#fff",
-                  fontSize: "0.6rem",
-                  fontWeight: 700,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                0
-              </span>
+              {cart.length > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "-2px",
+                    right: "-6px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "50%",
+                    backgroundColor: "var(--terracotta)",
+                    color: "#fff",
+                    fontSize: "0.6rem",
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {cart.length}
+                </span>
+              )}
             </button>
 
             {/* Mobile Hamburger */}
@@ -249,7 +259,7 @@ export default function Navbar() {
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                color: scrolled ? "var(--matte-black)" : "#fff",
+                color: showSolidNav ? "var(--matte-black)" : "#fff",
                 transition: "color 0.3s ease",
                 display: "none",
                 flexDirection: "column",
@@ -364,7 +374,7 @@ export default function Navbar() {
       </AnimatePresence>
 
       {/* Cart Drawer */}
-      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+      <CartDrawer />
 
       {/* Navbar styles */}
       <style jsx global>{`

@@ -6,14 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { allProducts, type Product } from "../lib/products";
+import { type Product } from "../lib/products";
+import { useStore } from "../lib/store";
 
 export default function WishlistPage() {
-  const [wishlist, setWishlist] = useState<Product[]>([allProducts[1], allProducts[5], allProducts[9]]);
-
-  const removeFromWishlist = (slug: string) => {
-    setWishlist(wishlist.filter(p => p.slug !== slug));
-  };
+  const { wishlist, removeFromWishlist } = useStore();
 
   return (
     <>

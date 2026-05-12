@@ -3,9 +3,11 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { getRelatedProducts, productReviews, type Product } from "../../lib/products";
+import { useStore } from "../../lib/store";
 
 export default function ProductDetailPage({ product }: { product: Product }) {
   const [mainImg, setMainImg] = useState(0);
@@ -14,6 +16,32 @@ export default function ProductDetailPage({ product }: { product: Product }) {
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState("reviews");
   const related = getRelatedProducts(product);
+  const router = useRouter();
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useStore();
+  
+  const inWishlist = isInWishlist(product.slug);
+
+  const handleAddToCart = () => {
+    addToCart({
+      ...product,
+      qty,
+      selectedSize: selectedSize || product.sizes[0], // Default to first size if none selected
+      selectedColor: product.colors[selectedColor].name
+    });
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    router.push("/checkout");
+  };
+
+  const toggleWishlist = () => {
+    if (inWishlist) {
+      removeFromWishlist(product.slug);
+    } else {
+      addToWishlist(product);
+    }
+  };
 
   return (
     <>
@@ -98,13 +126,18 @@ export default function ProductDetailPage({ product }: { product: Product }) {
                   <span style={{ width: "44px", textAlign: "center", fontSize: "0.9rem", fontWeight: 600, fontFamily: "var(--font-body)" }}>{qty}</span>
                   <button onClick={() => setQty(qty + 1)} style={{ width: "44px", height: "50px", border: "none", backgroundColor: "transparent", fontSize: "1.2rem", cursor: "pointer", color: "var(--matte-black)" }}>+</button>
                 </div>
-                <button style={{ flex: 1, padding: "16px", backgroundColor: "var(--terracotta)", color: "#fff", border: "none", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 600, fontFamily: "var(--font-body)", cursor: "pointer", letterSpacing: "0.05em", transition: "background-color 0.3s ease" }}
-                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = "var(--terracotta-dark)")}
-                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--terracotta)")}>
-                  Add to Cart — ₹{(product.price * qty).toLocaleString()}
+                <button onClick={handleAddToCart} style={{ flex: 1, padding: "16px", backgroundColor: "var(--warm-cream)", color: "var(--terracotta)", border: "2px solid var(--terracotta)", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 600, fontFamily: "var(--font-body)", cursor: "pointer", letterSpacing: "0.05em", transition: "all 0.3s ease" }}
+                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--terracotta)"; e.currentTarget.style.color = "#fff"; }}
+                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = "var(--warm-cream)"; e.currentTarget.style.color = "var(--terracotta)"; }}>
+                  Add to Cart
                 </button>
-                <button style={{ width: "50px", height: "50px", border: "1px solid var(--sand-beige)", borderRadius: "10px", backgroundColor: "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--matte-black)" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
+                <button onClick={handleBuyNow} style={{ flex: 1, padding: "16px", backgroundColor: "var(--terracotta)", color: "#fff", border: "2px solid var(--terracotta)", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 600, fontFamily: "var(--font-body)", cursor: "pointer", letterSpacing: "0.05em", transition: "all 0.3s ease" }}
+                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = "var(--terracotta-dark)"; e.currentTarget.style.borderColor = "var(--terracotta-dark)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = "var(--terracotta)"; e.currentTarget.style.borderColor = "var(--terracotta)"; }}>
+                  Buy Now — ₹{(product.price * qty).toLocaleString()}
+                </button>
+                <button onClick={toggleWishlist} style={{ width: "50px", height: "50px", border: "1px solid var(--sand-beige)", borderRadius: "10px", backgroundColor: inWishlist ? "rgba(194,96,63,0.1)" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s ease" }} aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill={inWishlist ? "var(--terracotta)" : "none"} stroke={inWishlist ? "var(--terracotta)" : "var(--matte-black)"} strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
                 </button>
               </div>
 
