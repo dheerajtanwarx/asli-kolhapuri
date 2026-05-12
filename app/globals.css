@@ -1,26 +1,169 @@
 @import "tailwindcss";
 
+/* ======================================
+   KOLHAPURI WALA — Design System
+   ====================================== */
+
+/* Google Fonts loaded via <link> in layout.tsx */
+
+/* ======================================
+   CSS Custom Properties
+   ====================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color Palette */
+  --warm-cream: #F5EFE0;
+  --off-white: #FAF7F2;
+  --near-black: #0E0C0A;
+  --matte-black: #1A1A1A;
+  --terracotta: #C2603F;
+  --terracotta-dark: #A8502F;
+  --leather-brown: #7B4A2D;
+  --sand-beige: #D4B896;
+  --warm-grey: #857C72;
+
+  /* Typography */
+  --font-display: 'Playfair Display', serif;
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-label: 'Lora', serif;
+
+  /* Spacing */
+  --section-padding: 120px;
+  --container-max: 1400px;
+  --nav-height: 80px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ======================================
+   Global Reset & Base Styles
+   ====================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  color: var(--matte-black);
+  background-color: var(--off-white);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ======================================
+   Typography Utilities
+   ====================================== */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-label {
+  font-family: var(--font-label);
+  font-style: italic;
+}
+
+/* ======================================
+   Container
+   ====================================== */
+.container-kw {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ======================================
+   Custom Scrollbar
+   ====================================== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--off-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sand-beige);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--leather-brown);
+}
+
+/* ======================================
+   Selection Color
+   ====================================== */
+::selection {
+  background: var(--terracotta);
+  color: white;
+}
+
+/* ======================================
+   Marquee Animation
+   ====================================== */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ======================================
+   Floating Animation
+   ====================================== */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ======================================
+   Scroll Indicator Animation
+   ====================================== */
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(10px); opacity: 0.5; }
+}
+
+.scroll-indicator {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+/* ======================================
+   Responsive Adjustments
+   ====================================== */
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 60px;
+    --nav-height: 64px;
+  }
+
+  .container-kw {
+    padding: 0 20px;
+  }
 }
