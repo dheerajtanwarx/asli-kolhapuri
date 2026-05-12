@@ -4,10 +4,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { type Product } from "../lib/products";
-import { useStore } from "../lib/store";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import { type Product } from "../../lib/products";
+import { useStore } from "../../lib/store";
 
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist } = useStore();
@@ -53,7 +53,7 @@ function WishlistCard({ product, index, onRemove }: { product: Product; index: n
     <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }} transition={{ delay: index * 0.05 }} style={{ position: "relative" }}>
       {/* Remove Button */}
       <button onClick={onRemove} style={{ position: "absolute", top: "12px", right: "12px", zIndex: 10, width: "32px", height: "32px", borderRadius: "50%", backgroundColor: "#fff", border: "1px solid var(--sand-beige)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--matte-black)", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }} aria-label="Remove from wishlist">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
       </button>
 
       <Link href={`/product/${product.slug}`} style={{ textDecoration: "none", color: "inherit" }}>

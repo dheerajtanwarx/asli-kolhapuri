@@ -2,15 +2,15 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 export default function AboutPage() {
   return (
     <>
       <Navbar />
       <main style={{ paddingTop: "var(--nav-height)", backgroundColor: "var(--off-white)" }}>
-        
+
         {/* Hero Section */}
         <section style={{ padding: "80px 40px", textAlign: "center" }}>
           <div className="container-kw" style={{ maxWidth: "800px", margin: "0 auto" }}>
@@ -23,7 +23,7 @@ export default function AboutPage() {
         {/* Story Content Split */}
         <section style={{ padding: "0 0 100px", overflow: "hidden" }}>
           <div className="container-kw" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
-            
+
             {/* Image */}
             <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} style={{ position: "relative", borderRadius: "20px", overflow: "hidden", aspectRatio: "4/5" }}>
               <Image src="/images/artisan-story.png" alt="Master artisan at work" fill style={{ objectFit: "cover" }} sizes="50vw" />
@@ -78,7 +78,7 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
-        
+
       </main>
       <Footer />
 

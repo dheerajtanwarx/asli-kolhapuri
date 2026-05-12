@@ -1,4 +1,4 @@
-import { allProducts } from "../../lib/products";
+import { allProducts } from "../../../lib/products";
 import ProductDetailPage from "./ProductDetailPage";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";

@@ -3,9 +3,9 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { mensProducts, styleFilters, priceRanges, sortOptions, type Product } from "../lib/products";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import { mensProducts, styleFilters, priceRanges, sortOptions, type Product } from "../../lib/products";
 
 export default function MensCollectionPage() {
   const [activeStyle, setActiveStyle] = useState("All");
@@ -55,7 +55,7 @@ export default function MensCollectionPage() {
             {/* Sort & Filter Toggle */}
             <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
               <button onClick={() => setShowFilters(!showFilters)} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "8px 16px", border: "1px solid var(--sand-beige)", borderRadius: "8px", backgroundColor: "transparent", fontSize: "0.8rem", fontFamily: "var(--font-body)", cursor: "pointer", color: "var(--matte-black)" }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="4" y1="6" x2="20" y2="6" /><line x1="4" y1="12" x2="14" y2="12" /><line x1="4" y1="18" x2="10" y2="18" /></svg>
                 Filters
               </button>
               <select value={activeSort} onChange={e => setActiveSort(e.target.value)} style={{ padding: "8px 16px", border: "1px solid var(--sand-beige)", borderRadius: "8px", backgroundColor: "transparent", fontSize: "0.8rem", fontFamily: "var(--font-body)", cursor: "pointer", color: "var(--matte-black)", outline: "none" }}>

@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 export default function RegisterPage() {
   return (
@@ -12,7 +12,7 @@ export default function RegisterPage() {
       <main style={{ paddingTop: "calc(var(--nav-height) + 40px)", minHeight: "100vh", backgroundColor: "var(--off-white)", display: "flex", flexDirection: "column", paddingBottom: "100px" }}>
         <div className="container-kw" style={{ display: "flex", justifyContent: "center", alignItems: "center", flex: 1 }}>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ width: "100%", maxWidth: "480px", backgroundColor: "var(--warm-cream)", padding: "48px 40px", borderRadius: "16px", boxShadow: "0 10px 40px rgba(0,0,0,0.05)" }}>
-            
+
             <div style={{ textAlign: "center", marginBottom: "40px" }}>
               <h1 className="font-display" style={{ fontSize: "2.5rem", fontWeight: 700, color: "var(--matte-black)", marginBottom: "8px" }}>Create Account</h1>
               <p style={{ color: "var(--warm-grey)", fontSize: "0.95rem" }}>Join Kolhapuri Wala for faster checkout and exclusive artisan stories.</p>

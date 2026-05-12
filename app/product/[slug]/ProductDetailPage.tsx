@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import { getRelatedProducts, productReviews, type Product } from "../../lib/products";
-import { useStore } from "../../lib/store";
+import Navbar from "../../../components/Navbar";
+import Footer from "../../../components/Footer";
+import { getRelatedProducts, productReviews, type Product } from "../../../lib/products";
+import { useStore } from "../../../lib/store";
 
 export default function ProductDetailPage({ product }: { product: Product }) {
   const [mainImg, setMainImg] = useState(0);
@@ -18,7 +18,7 @@ export default function ProductDetailPage({ product }: { product: Product }) {
   const related = getRelatedProducts(product);
   const router = useRouter();
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useStore();
-  
+
   const inWishlist = isInWishlist(product.slug);
 
   const handleAddToCart = () => {

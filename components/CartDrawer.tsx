@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useStore } from "../lib/store";
+import { useStore } from "../app/lib/store";
 
 export default function CartDrawer() {
   const { cart, cartOpen, setCartOpen, updateCartQty, removeFromCart } = useStore();
@@ -60,7 +60,7 @@ export default function CartDrawer() {
             <div style={{ padding: "24px 32px", borderBottom: "1px solid var(--sand-beige)", display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "var(--warm-cream)" }}>
               <h2 className="font-heading" style={{ fontSize: "1.5rem", fontWeight: 600, color: "var(--matte-black)" }}>Your Cart ({cart.length})</h2>
               <button onClick={() => setCartOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", padding: "4px", color: "var(--warm-grey)" }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
               </button>
             </div>
 

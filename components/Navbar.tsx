@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import CartDrawer from "./CartDrawer";
-import { useStore } from "../lib/store";
+import { useStore } from "../app/lib/store";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -20,7 +20,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { cart, cartOpen, setCartOpen } = useStore();
   const pathname = usePathname();
-  
+
   const isHome = pathname === "/";
   const showSolidNav = !isHome || scrolled;
 
