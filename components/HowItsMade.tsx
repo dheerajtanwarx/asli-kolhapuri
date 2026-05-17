@@ -1,12 +1,15 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import processCuttingImg from "../public/images/process-cutting.png";
+import heroBgImg from "../public/images/hero-bg.png";
+import heroSandalImg from "../public/images/hero-sandal.png";
 
 const steps = [
-  { num: "01", title: "Selecting the Hide", desc: "Premium vegetable-tanned leather is carefully chosen for texture, flexibility, and durability.", image: "/images/process-cutting.png" },
-  { num: "02", title: "Hand Cutting", desc: "Each piece is precisely hand-cut using traditional tools passed down through generations.", image: "/images/process-cutting.png" },
-  { num: "03", title: "Braiding & Weaving", desc: "Intricate leather braids are woven by skilled artisan hands, creating signature Kolhapuri patterns.", image: "/images/hero-bg.png" },
-  { num: "04", title: "Final Finishing", desc: "Oil-polished and sun-dried for a natural sheen that only gets better with age.", image: "/images/hero-sandal.png" },
+  { num: "01", title: "Selecting the Hide", desc: "Premium vegetable-tanned leather is carefully chosen for texture, flexibility, and durability.", image: processCuttingImg },
+  { num: "02", title: "Hand Cutting", desc: "Each piece is precisely hand-cut using traditional tools passed down through generations.", image: processCuttingImg },
+  { num: "03", title: "Braiding & Weaving", desc: "Intricate leather braids are woven by skilled artisan hands, creating signature Kolhapuri patterns.", image: heroBgImg },
+  { num: "04", title: "Final Finishing", desc: "Oil-polished and sun-dried for a natural sheen that only gets better with age.", image: heroSandalImg },
 ];
 
 export default function HowItsMade() {

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useStore } from "../app/lib/store";
+import { useStore } from "../lib/store";
 
 export default function CartDrawer() {
   const { cart, cartOpen, setCartOpen, updateCartQty, removeFromCart } = useStore();

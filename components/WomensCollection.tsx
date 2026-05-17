@@ -3,35 +3,32 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import womensCollectionImg from "../public/images/womens-collection.png";
 
-const womensProducts = [
-  {
-    name: "Embroidered Kolhapuri",
-    price: "₹1,899",
-    priceUSD: "$23",
-    image: "/images/womens-collection.png",
-  },
-  {
-    name: "Beaded T-Strap",
-    price: "₹2,199",
-    priceUSD: "$27",
-    image: "/images/womens-collection.png",
-  },
-  {
-    name: "Classic Leather Flat",
-    price: "₹1,599",
-    priceUSD: "$20",
-    image: "/images/womens-collection.png",
-  },
-  {
-    name: "Decorative Slide",
-    price: "₹1,999",
-    priceUSD: "$24",
-    image: "/images/womens-collection.png",
-  },
-];
+import { useEffect, useState } from "react";
 
 export default function WomensCollection() {
+  const [womensProducts, setWomensProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/product");
+        const data = await res.json();
+        if (data.success) {
+          // Sort newest first so recently added products appear at top
+          const sorted = [...data.products].sort(
+            (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          const women = sorted.filter((p: any) => p.category?.toLowerCase() === "women").slice(0, 4);
+          setWomensProducts(women);
+        }
+      } catch (error) {
+        console.error("Failed to fetch womens products", error);
+      }
+    }
+    fetchProducts();
+  }, []);
   return (
     <section
       id="womens-collection"
@@ -113,85 +110,90 @@ export default function WomensCollection() {
           {/* Left — Product Cards Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
             {womensProducts.map((product, i) => (
-              <motion.div
-                key={product.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                style={{
-                  backgroundColor: "var(--off-white)",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  border: "1px solid transparent",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-6px)";
-                  e.currentTarget.style.boxShadow = "0 12px 40px rgba(123,74,45,0.12)";
-                  e.currentTarget.style.borderColor = "var(--sand-beige)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.borderColor = "transparent";
-                }}
+              <Link
+                key={product._id}
+                href={`/product/${product._id}`}
+                style={{ textDecoration: "none", color: "inherit", display: "block" }}
               >
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                   style={{
+                    backgroundColor: "var(--off-white)",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
                     position: "relative",
-                    aspectRatio: "1",
-                    backgroundColor: "#EDE8DB",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "20px",
+                    border: "1px solid transparent",
+                    height: "100%",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-6px)";
+                    e.currentTarget.style.boxShadow = "0 12px 40px rgba(123,74,45,0.12)";
+                    e.currentTarget.style.borderColor = "var(--sand-beige)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.borderColor = "transparent";
                   }}
                 >
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={180}
-                    height={180}
-                    style={{ objectFit: "contain", transition: "transform 0.4s ease" }}
-                  />
-                </div>
-                <div style={{ padding: "16px" }}>
-                  <p
+                  <div
                     style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: "0.85rem",
-                      fontWeight: 500,
-                      color: "var(--matte-black)",
-                      marginBottom: "4px",
+                      position: "relative",
+                      aspectRatio: "1",
+                      backgroundColor: "#EDE8DB",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "20px",
                     }}
                   >
-                    {product.name}
-                  </p>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      style={{ width: "100%", height: "180px", objectFit: "cover", transition: "transform 0.4s ease", borderRadius: "8px" }}
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
+                    />
+                  </div>
+                  <div style={{ padding: "16px" }}>
+                    <p
                       style={{
                         fontFamily: "var(--font-body)",
-                        fontSize: "0.9rem",
-                        fontWeight: 600,
-                        color: "var(--terracotta)",
+                        fontSize: "0.85rem",
+                        fontWeight: 500,
+                        color: "var(--matte-black)",
+                        marginBottom: "4px",
                       }}
                     >
-                      {product.price}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "0.75rem",
-                        color: "var(--warm-grey)",
-                      }}
-                    >
-                      {product.priceUSD}
-                    </span>
+                      {product.name}
+                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span
+                        style={{
+                          fontFamily: "var(--font-body)",
+                          fontSize: "0.9rem",
+                          fontWeight: 600,
+                          color: "var(--terracotta)",
+                        }}
+                      >
+                        ₹{product.price.toLocaleString()}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--warm-grey)",
+                        }}
+                      >
+                        ${Math.round(product.price / 83)}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </Link>
             ))}
           </div>
 
@@ -201,6 +203,7 @@ export default function WomensCollection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            className="collection-hero-img"
             style={{
               position: "relative",
               borderRadius: "12px",
@@ -209,7 +212,7 @@ export default function WomensCollection() {
             }}
           >
             <Image
-              src="/images/womens-collection.png"
+              src={womensCollectionImg}
               alt="Women's Kolhapuri sandal collection"
               fill
               style={{ objectFit: "cover" }}
@@ -258,6 +261,14 @@ export default function WomensCollection() {
           }
           #womens-collection .container-kw > div:last-child > div:last-child {
             order: -1;
+          }
+        }
+        @media (max-width: 500px) {
+          #womens-collection .container-kw > div:last-child > div:first-child {
+            grid-template-columns: 1fr !important;
+          }
+          #womens-collection .collection-hero-img {
+            min-height: 300px !important;
           }
         }
       `}</style>

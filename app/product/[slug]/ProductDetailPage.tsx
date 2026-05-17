@@ -1,21 +1,49 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
-import { getRelatedProducts, productReviews, type Product } from "../../../lib/products";
+import { productReviews, type Product } from "../../../lib/products";
 import { useStore } from "../../../lib/store";
 
-export default function ProductDetailPage({ product }: { product: Product }) {
+// Extend the Product type to include DB fields (_id from MongoDB)
+type DBProduct = Product & { _id?: string };
+
+export default function ProductDetailPage({ product }: { product: DBProduct }) {
   const [mainImg, setMainImg] = useState(0);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState(0);
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState("reviews");
-  const related = getRelatedProducts(product);
+  const [related, setRelated] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchRelated() {
+      try {
+        const res = await fetch("/api/product");
+        const data = await res.json();
+        if (data.success) {
+          const productId = product._id || product.slug;
+          const rel = data.products
+            .filter((p: any) => p.category?.toLowerCase() === product.category?.toLowerCase() && p._id !== productId)
+            .slice(0, 4)
+            .map((p: any) => ({
+              ...p,
+              slug: p._id,
+              images: [p.image],
+              priceUSD: Math.round(p.price / 83)
+            }));
+          setRelated(rel);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    fetchRelated();
+  }, [product.category, product._id]);
   const router = useRouter();
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useStore();
 
@@ -186,7 +214,13 @@ export default function ProductDetailPage({ product }: { product: Product }) {
             {/* Meet the Artisan */}
             <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
               <div style={{ position: "relative", borderRadius: "16px", overflow: "hidden", aspectRatio: "4/5", marginBottom: "24px" }}>
-                <Image src={product.artisanImage} alt={`Artisan ${product.artisan}`} fill style={{ objectFit: "cover" }} sizes="50vw" />
+                <Image
+                  src={product.artisanImage || "/images/artisan-story.png"}
+                  alt={`Artisan ${product.artisan}`}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="50vw"
+                />
                 <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "32px", background: "linear-gradient(transparent, rgba(14,12,10,0.85))" }}>
                   <span className="font-label" style={{ fontSize: "0.75rem", color: "var(--sand-beige)", letterSpacing: "0.12em", display: "block", marginBottom: "6px" }}>Meet the Artisan</span>
                   <p className="font-heading" style={{ fontSize: "1.5rem", fontWeight: 600, color: "#fff", marginBottom: "4px" }}>{product.artisan}</p>

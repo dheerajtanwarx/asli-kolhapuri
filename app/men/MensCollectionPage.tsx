@@ -1,17 +1,55 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { mensProducts, styleFilters, priceRanges, sortOptions, type Product } from "../../lib/products";
+import { styleFilters, priceRanges, sortOptions, type Product } from "../../lib/products";
 
 export default function MensCollectionPage() {
+  const [mensProducts, setMensProducts] = useState<Product[]>([]);
   const [activeStyle, setActiveStyle] = useState("All");
   const [activePriceRange, setActivePriceRange] = useState(0);
   const [activeSort, setActiveSort] = useState("featured");
   const [showFilters, setShowFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/product");
+        const data = await res.json();
+        if (data.success) {
+          const men = data.products
+            .filter((p: any) => p.category?.toLowerCase() === "men")
+            .map((p: any) => ({
+              ...p,
+              slug: p._id,
+              images: [p.image],
+              shortDescription: p.description.substring(0, 60) + "...",
+              sizes: [6, 7, 8, 9, 10, 11],
+              colors: [{ name: "Default", hex: "#5C3A1E" }],
+              style: "Traditional",
+              material: "Leather",
+              artisan: "Local Artisan",
+              artisanLocation: "Kolhapur",
+              artisanImage: "/images/artisan-story.png",
+              rating: 4.8,
+              reviewCount: 15,
+              inStock: true,
+              priceUSD: Math.round(p.price / 83)
+            }));
+          setMensProducts(men);
+        }
+      } catch (error) {
+        console.error("Failed to fetch mens products", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
 
   const filtered = useMemo(() => {
     let result = [...mensProducts];
@@ -86,15 +124,21 @@ export default function MensCollectionPage() {
           <p style={{ fontSize: "0.85rem", color: "var(--warm-grey)", marginBottom: "24px" }}>Showing {filtered.length} {filtered.length === 1 ? "product" : "products"}</p>
 
           {/* Product Grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "32px" }}>
-            <AnimatePresence mode="popLayout">
-              {filtered.map((product, i) => (
-                <ProductCard key={product.slug} product={product} index={i} />
-              ))}
-            </AnimatePresence>
-          </div>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "80px 20px" }}>
+              <p style={{ color: "var(--warm-grey)" }}>Loading products...</p>
+            </div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "32px" }}>
+              <AnimatePresence mode="popLayout">
+                {filtered.map((product, i) => (
+                  <ProductCard key={product.slug} product={product} index={i} />
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
 
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <div style={{ textAlign: "center", padding: "80px 20px" }}>
               <p className="font-heading" style={{ fontSize: "1.5rem", color: "var(--matte-black)", marginBottom: "8px" }}>No products found</p>
               <p style={{ color: "var(--warm-grey)", fontSize: "0.9rem" }}>Try adjusting your filters</p>
@@ -116,7 +160,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ backgroundColor: "var(--warm-cream)", borderRadius: "14px", overflow: "hidden", transition: "all 0.4s ease", transform: hovered ? "translateY(-8px)" : "translateY(0)", boxShadow: hovered ? "0 16px 48px rgba(123,74,45,0.15)" : "0 2px 12px rgba(0,0,0,0.04)", border: hovered ? "1px solid var(--sand-beige)" : "1px solid transparent", cursor: "pointer" }}>
           {/* Image */}
           <div style={{ position: "relative", aspectRatio: "1", backgroundColor: "#F0EAD6", overflow: "hidden" }}>
-            <Image src={product.images[0]} alt={product.name} fill style={{ objectFit: "cover", transition: "transform 0.6s ease", transform: hovered ? "scale(1.06)" : "scale(1)" }} sizes="(max-width:600px) 100vw, (max-width:1000px) 50vw, 33vw" />
+            <img src={product.images[0]} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.6s ease", transform: hovered ? "scale(1.06)" : "scale(1)" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />
             {product.badge && (
               <span style={{ position: "absolute", top: "14px", left: "14px", padding: "5px 14px", borderRadius: "20px", backgroundColor: product.badge === "Best Seller" ? "var(--terracotta)" : product.badge === "Premium" ? "var(--near-black)" : product.badge === "New Arrival" ? "var(--leather-brown)" : "var(--matte-black)", color: "#fff", fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.05em", fontFamily: "var(--font-body)" }}>{product.badge}</span>
             )}

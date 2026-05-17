@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import heroBg from "../public/images/hero-bg.png";
+import heroSandal from "../public/images/hero-sandal.png";
 
 export default function Hero() {
   return (
@@ -28,7 +30,7 @@ export default function Hero() {
         }}
       >
         <Image
-          src="/images/hero-bg.png"
+          src={heroBg}
           alt="Artisan crafting leather in a traditional Rajasthani workshop"
           fill
           priority
@@ -240,7 +242,7 @@ export default function Hero() {
         >
           <div className="animate-float" style={{ position: "relative" }}>
             <Image
-              src="/images/hero-sandal.png"
+              src={heroSandal}
               alt="Handcrafted Kolhapuri leather sandal"
               width={520}
               height={520}

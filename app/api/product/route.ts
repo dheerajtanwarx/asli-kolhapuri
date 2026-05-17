@@ -1,8 +1,5 @@
 import { connectDB } from "@/lib/db";
 import Product from "@/models/Product.model";
-
-import { connect } from "http2";
-import { NetConnectOpts } from "net";
 import { NextRequest, NextResponse } from "next/server";
 
 //add products

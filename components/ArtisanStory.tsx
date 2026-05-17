@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import artisanStory from "../public/images/artisan-story.png";
 
 export default function ArtisanStory() {
   const points = [
@@ -16,7 +17,7 @@ export default function ArtisanStory() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
           <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} style={{ position: "relative" }}>
             <div style={{ position: "relative", borderRadius: "16px", overflow: "hidden", aspectRatio: "4/5" }}>
-              <Image src="/images/artisan-story.png" alt="Rajasthani artisan crafting Kolhapuri sandals" fill style={{ objectFit: "cover" }} sizes="(max-width:900px)100vw,50vw" />
+              <Image src={artisanStory} alt="Rajasthani artisan crafting Kolhapuri sandals" fill style={{ objectFit: "cover" }} sizes="(max-width:900px)100vw,50vw" />
             </div>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.5 }} style={{ position: "absolute", bottom: "-30px", right: "-30px", backgroundColor: "var(--near-black)", borderRadius: "16px", padding: "28px 32px", color: "#fff", boxShadow: "0 20px 60px rgba(0,0,0,0.2)" }}>
               <span className="font-display" style={{ fontSize: "2.5rem", fontWeight: 700, color: "var(--terracotta)", display: "block", lineHeight: 1 }}>3+</span>
@@ -31,7 +32,7 @@ export default function ArtisanStory() {
               <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "var(--warm-grey)" }}>In the golden lanes of Rajasthan, our family has been crafting Kolhapuri footwear for over three generations. What began as a humble workshop under a banyan tree has become a legacy of artisanal excellence.</p>
               <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "var(--warm-grey)" }}>Each pair is hand-cut, hand-stitched, and hand-finished using techniques unchanged for centuries. We use only the finest vegetable-tanned leather, sourced responsibly from local tanneries.</p>
             </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "36px" }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="artisan-points-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "36px" }}>
               {points.map((item) => (
                 <div key={item.label} style={{ padding: "16px", backgroundColor: "var(--warm-cream)", borderRadius: "10px", borderLeft: "3px solid var(--terracotta)" }}>
                   <p style={{ fontWeight: 600, fontSize: "0.9rem", color: "var(--matte-black)", marginBottom: "4px" }}>{item.label}</p>
@@ -52,6 +53,9 @@ export default function ArtisanStory() {
       <style jsx global>{`
         @media (max-width:900px) {
           #artisan-story .container-kw > div { grid-template-columns:1fr !important; gap:60px !important; }
+        }
+        @media (max-width:500px) {
+          #artisan-story .artisan-points-grid { grid-template-columns:1fr !important; }
         }
       `}</style>
     </section>

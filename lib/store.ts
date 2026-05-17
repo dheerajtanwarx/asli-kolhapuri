@@ -23,6 +23,10 @@ interface AppState {
   addToWishlist: (product: Product) => void;
   removeFromWishlist: (slug: string) => void;
   isInWishlist: (slug: string) => boolean;
+
+  // Search State
+  searchOpen: boolean;
+  setSearchOpen: (isOpen: boolean) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -69,11 +73,14 @@ export const useStore = create<AppState>()(
       })),
       isInWishlist: (slug) => {
         return get().wishlist.some(p => p.slug === slug);
-      }
+      },
+      // Search
+      searchOpen: false,
+      setSearchOpen: (isOpen) => set({ searchOpen: isOpen }),
     }),
     {
       name: 'kolhapuri-storage',
-      // only persist cart and wishlist, not UI state like cartOpen
+      // only persist cart and wishlist, not UI state like cartOpen or searchOpen
       partialize: (state) => ({ cart: state.cart, wishlist: state.wishlist }),
     }
   )
