@@ -57,10 +57,19 @@ export default function AdminPage() {
     toastTimeout.current = setTimeout(() => setToast(null), 3500);
   }
 
-  // Redirect if not authenticated
+  // Redirect if not authenticated or not admin
   useEffect(() => {
-    if (status === "unauthenticated") router.replace("/login");
-  }, [status, router]);
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    } else if (status === "authenticated") {
+      const userRole = (session?.user as any)?.role;
+      const userEmail = session?.user?.email;
+      
+      if (userRole !== "admin" && userEmail !== "dheeraj@gmail.com") {
+        router.replace("/");
+      }
+    }
+  }, [status, router, session]);
 
   async function fetchProducts() {
     setLoading(true);

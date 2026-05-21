@@ -28,8 +28,12 @@ export default withAuth(
           pathname.startsWith("/api/product")
         ) return true;
 
-        // Admin and protected routes require a token
-        return !!token;
+        // Admin route - only for admin role or specific email
+        if (pathname.startsWith("/admin")) {
+          const userRole = token?.role as string;
+          const userEmail = token?.email as string;
+          return userRole === "admin" || userEmail === "dheeraj@gmail.com";
+        }
       },
     },
   }
