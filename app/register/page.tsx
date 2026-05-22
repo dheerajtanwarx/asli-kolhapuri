@@ -51,7 +51,7 @@ export default function RegisterPage() {
       if (result?.error) {
         router.push("/login");
       } else {
-        router.push("/admin");
+        router.push("/");
         router.refresh();
       }
     } catch {

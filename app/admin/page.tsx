@@ -40,6 +40,7 @@ export default function AdminPage() {
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"products" | "add" | "orders">("products");
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
   const toastTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Mock orders data (replace with real API call when orders API is ready)
@@ -66,7 +67,11 @@ export default function AdminPage() {
       const userEmail = session?.user?.email;
       
       if (userRole !== "admin" && userEmail !== "dheeraj@gmail.com") {
-        router.replace("/");
+        setIsUnauthorized(true);
+        const redirectTimer = setTimeout(() => {
+          router.replace("/");
+        }, 3000);
+        return () => clearTimeout(redirectTimer);
       }
     }
   }, [status, router, session]);
@@ -138,6 +143,35 @@ export default function AdminPage() {
           <p style={{ color: "var(--warm-grey)", fontFamily: "var(--font-body)" }}>Loading…</p>
         </div>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  if (isUnauthorized) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "var(--off-white)" }}>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          style={{
+            textAlign: "center",
+            padding: "40px",
+            backgroundColor: "#FEE2E2",
+            border: "2px solid #DC2626",
+            borderRadius: "12px",
+            maxWidth: "400px",
+          }}
+        >
+          <div style={{ fontSize: "3rem", marginBottom: "16px" }}>⛔</div>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#991B1B", marginBottom: "12px" }}>Access Denied</h1>
+          <p style={{ color: "#7F1D1D", fontSize: "0.95rem", marginBottom: "20px" }}>
+            You are not authorized to access the Admin Panel. Only administrators can access this area.
+          </p>
+          <p style={{ color: "#7F1D1D", fontSize: "0.85rem", fontStyle: "italic" }}>
+            Redirecting you to home page in 3 seconds...
+          </p>
+        </motion.div>
       </div>
     );
   }

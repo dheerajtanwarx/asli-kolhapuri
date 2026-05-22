@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import { productReviews, type Product } from "../../../lib/products";
@@ -19,6 +20,13 @@ export default function ProductDetailPage({ product }: { product: DBProduct }) {
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState("reviews");
   const [related, setRelated] = useState<any[]>([]);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const router = useRouter();
+  const { status } = useSession();
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useStore();
+
+  const inWishlist = isInWishlist(product.slug);
 
   useEffect(() => {
     async function fetchRelated() {
@@ -44,22 +52,31 @@ export default function ProductDetailPage({ product }: { product: DBProduct }) {
     }
     fetchRelated();
   }, [product.category, product._id]);
-  const router = useRouter();
-  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useStore();
-
-  const inWishlist = isInWishlist(product.slug);
 
   const handleAddToCart = () => {
+    if (status !== "authenticated") {
+      setShowLoginModal(true);
+      return;
+    }
     addToCart({
       ...product,
       qty,
-      selectedSize: selectedSize || product.sizes[0], // Default to first size if none selected
+      selectedSize: selectedSize || product.sizes[0],
       selectedColor: product.colors[selectedColor].name
     });
   };
 
   const handleBuyNow = () => {
-    handleAddToCart();
+    if (status !== "authenticated") {
+      setShowLoginModal(true);
+      return;
+    }
+    addToCart({
+      ...product,
+      qty,
+      selectedSize: selectedSize || product.sizes[0],
+      selectedColor: product.colors[selectedColor].name
+    });
     router.push("/checkout");
   };
 
@@ -323,6 +340,122 @@ export default function ProductDetailPage({ product }: { product: DBProduct }) {
         </section>
       </main>
       <Footer />
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowLoginModal(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "16px",
+              padding: "40px",
+              maxWidth: "400px",
+              width: "90%",
+              textAlign: "center",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: "2.5rem", marginBottom: "16px" }}>🔐</div>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--matte-black)", marginBottom: "12px" }}>
+              Login Required
+            </h2>
+            <p style={{ color: "var(--warm-grey)", fontSize: "0.95rem", marginBottom: "24px", lineHeight: 1.6 }}>
+              You must be logged in to add items to your cart. Sign in to your account or create a new one to continue shopping.
+            </p>
+            <div style={{ display: "flex", gap: "12px", flexDirection: "column" }}>
+              <button
+                onClick={() => {
+                  setShowLoginModal(false);
+                  router.push("/login");
+                }}
+                style={{
+                  padding: "14px",
+                  backgroundColor: "var(--terracotta)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
+                  fontFamily: "var(--font-body)",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--terracotta-dark)")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--terracotta)")}
+              >
+                Go to Login
+              </button>
+              <button
+                onClick={() => {
+                  setShowLoginModal(false);
+                  router.push("/register");
+                }}
+                style={{
+                  padding: "14px",
+                  backgroundColor: "var(--warm-cream)",
+                  color: "var(--terracotta)",
+                  border: "2px solid var(--terracotta)",
+                  borderRadius: "10px",
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
+                  fontFamily: "var(--font-body)",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--terracotta)";
+                  e.currentTarget.style.color = "#fff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--warm-cream)";
+                  e.currentTarget.style.color = "var(--terracotta)";
+                }}
+              >
+                Create New Account
+              </button>
+              <button
+                onClick={() => setShowLoginModal(false)}
+                style={{
+                  padding: "12px",
+                  backgroundColor: "transparent",
+                  color: "var(--warm-grey)",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontSize: "0.9rem",
+                  fontFamily: "var(--font-body)",
+                  cursor: "pointer",
+                  transition: "color 0.2s ease",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--matte-black)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--warm-grey)")}
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
 
       <style jsx global>{`
         @media (max-width: 900px) {

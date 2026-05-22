@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -10,14 +10,17 @@ import Footer from "../../components/Footer";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setSuccess("");
     setLoading(true);
 
     const result = await signIn("credentials", {
@@ -31,8 +34,25 @@ export default function LoginPage() {
     if (result?.error) {
       setError("Invalid email or password. Please try again.");
     } else {
-      router.push("/admin");
-      router.refresh();
+      setSuccess("Login successful! Redirecting...");
+      
+      // Determine redirect based on user role
+      const checkAdminStatus = async () => {
+        const res = await fetch("/api/auth/session");
+        const session = await res.json();
+        
+        const userRole = (session?.user as any)?.role;
+        const userEmail = session?.user?.email;
+        
+        if (userRole === "admin" || userEmail === "dheeraj@gmail.com") {
+          router.push("/admin");
+        } else {
+          router.push("/");
+        }
+        router.refresh();
+      };
+      
+      setTimeout(checkAdminStatus, 800);
     }
   }
 
@@ -59,6 +79,16 @@ export default function LoginPage() {
                 style={{ backgroundColor: "#FEE2E2", border: "1px solid #FCA5A5", color: "#991B1B", padding: "12px 16px", borderRadius: "8px", fontSize: "0.875rem", marginBottom: "20px" }}
               >
                 {error}
+              </motion.div>
+            )}
+
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{ backgroundColor: "#DCFCE7", border: "1px solid #86EFAC", color: "#166534", padding: "12px 16px", borderRadius: "8px", fontSize: "0.875rem", marginBottom: "20px" }}
+              >
+                ✅ {success}
               </motion.div>
             )}
 
